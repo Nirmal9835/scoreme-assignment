@@ -1,0 +1,17 @@
+## Task 2 - ConcurrentModificationException Analysis
+
+### 1. What is the exact cause of ConcurrentModificationException in Java?
+
+ConcurrentModificationException tab aata hai jab ek collection ko iterate karte time usme directly add/remove kiya jata hai.
+
+---
+
+### 2. What code pattern most likely triggered this error?
+
+For-each loop ke andar same list ko modify karna.
+
+Example:
+```java
+for (Transaction t : list) {
+    list.remove(t);
+}

@@ -1,0 +1,64 @@
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+
+public class DocumentValidator {
+
+    // FIX: proper logger instead of printStackTrace
+    private static final Logger logger = LoggerFactory.getLogger(DocumentValidator.class);
+
+    public ValidationResult validate(Document doc) {
+
+        try {
+            if (doc == null) {
+                logger.warn("Document is null"); // FIX
+                return ValidationResult.invalid("Document is null"); // FIX
+            }
+
+            String content = doc.extractContent();
+
+            if (content == null || content.isEmpty()) {
+                logger.warn("Empty content"); // FIX
+                return ValidationResult.invalid("Empty content"); // FIX
+            }
+
+            return runValidationRules(content);
+
+        } catch (Exception e) {
+
+            // FIX: log unexpected exceptions properly
+            logger.error("Unexpected error during validation", e);
+
+            return ValidationResult.invalid("System error"); // FIX
+        }
+    }
+
+    public void validateBatch(List<Document> docs) {
+
+        for (Document doc : docs) {
+
+            try {
+                ValidationResult r = validate(doc);
+
+                // FIX: null check before calling isValid()
+                if (r != null && r.isValid()) {
+                    saveResult(r);
+                }
+
+            } catch (Exception e) {
+                // FIX: no silent swallowing, log it properly
+                logger.error("Error processing document in batch", e);
+            }
+        }
+    }
+
+    // assumed existing methods
+    private ValidationResult runValidationRules(String content) {
+        return new ValidationResult(true);
+    }
+
+    private void saveResult(ValidationResult r) {
+        // existing logic
+    }
+}
